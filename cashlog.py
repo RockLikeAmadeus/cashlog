@@ -8,8 +8,12 @@ ACTION_DIVIDER = "\n-----------------------------------\n\n"
 SPACER = "\n\n\n\n\n\n"
 HORIZONTAL_RULE_SHORT = "\n----------\n"
 
+# Enumerations
+TRANSACTION_TYPE = { 1: "Debit", 2: "Credit" }
+
 
 def print_wallet(wallet):
+    print(TRANSACTION_TYPE[1])
     '''
     Prints envelope balances.
     Accepts a dataframe.
@@ -26,15 +30,16 @@ def prompt_enter_txn():
     notes, prev_notes = None, None
     prompt = ""
     while True:
-        if (type == None):
+        if type == None:
             print("""
 Enter Transaction Details:
 Enter 'X' for any field when finished entering transactions.
 Press return without entering a value into a field to use the value for that field specified in the previously entered transaction (excludes field 'Notes').
             """)
             # TYPE
-            # TODO: Use a dictionary/map for the number-type relationship here
-            prompt = "Type" + HORIZONTAL_RULE_SHORT + "1 = Debit\n2 = Credit\n"
+            prompt = "Type" + HORIZONTAL_RULE_SHORT 
+            for key in TRANSACTION_TYPE:
+                prompt += str(key) + " = " + TRANSACTION_TYPE[key] + "\n"
             if prev_type != None:
                 prompt += "Default = " + str(prev_type) + "\n\n"
             else:
@@ -48,7 +53,7 @@ Press return without entering a value into a field to use the value for that fie
             elif user_input == "" and prev_type != None:
                 user_input = prev_type
             type = user_input
-        if (date == None):
+        if date == None:
             # DATE
             prompt = "\nDate" + HORIZONTAL_RULE_SHORT
             if prev_date != None:
