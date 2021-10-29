@@ -1,9 +1,18 @@
 
 import numpy as np
 import pandas as pd
+from tabulate import tabulate
 
 EXIT_CODES = ('X', 'x', 'exit', 'back')
-ACTION_DIVIDER = "\n\n\n\n\n\n-----------------------------------\n\n"
+ACTION_DIVIDER = "\n-----------------------------------\n\n"
+
+
+def print_wallet(wallet):
+    '''
+    Prints envelope balances.
+    Accepts a dataframe.
+    '''
+    print('\n' + tabulate(wallet[['envelope', 'balance']].values.tolist(), headers=['Envelope', 'Balance']))
 
 def prompt_enter_txn():
     type = None
@@ -20,9 +29,7 @@ def prompt_enter_txn():
 
 def main():
     wallet = pd.read_csv("wallet.csv")
-    print(wallet)
-    for index, item in wallet.iterrows():
-        print(item['envelope'] + '\t\t\t\t' + str(item['balance']))
+    print_wallet(wallet)
 
     action = ""
     while action not in EXIT_CODES:
