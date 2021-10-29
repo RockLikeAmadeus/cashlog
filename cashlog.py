@@ -9,11 +9,16 @@ SPACER = "\n\n\n\n\n\n"
 HORIZONTAL_RULE_SHORT = "\n----------\n"
 
 # Enumerations
+TASKS = { 
+    1: "Enter a transaction",
+    2: "Allocate funds based on a pre-configured distribution",
+    3: "Transfer funds between envelope",
+    "X": "Exit" 
+}
 TRANSACTION_TYPE = { 1: "Debit", 2: "Credit" }
 
 
 def print_wallet(wallet):
-    print(TRANSACTION_TYPE[1])
     '''
     Prints envelope balances.
     Accepts a dataframe.
@@ -91,7 +96,10 @@ def main():
     action = ""
     while action not in EXIT_CODES:
         # TODO: Use an actual map/dictionary object to define which numbers correspond to which actions, and automate the generation of this string based on the dictionary
-        print(ACTION_DIVIDER + "Available Tasks:\n1. Enter a transaction\n2. Allocate funds based on a pre-configured distribution\n3. Transfer funds between envelopes\nX. Exit\n")
+        prompt = ACTION_DIVIDER + "Available Tasks:\n"
+        for key in TASKS:
+                prompt += str(key) + " = " + TASKS[key] + "\n"
+        print(prompt)
         action = input("Choose a task: ")
         match action:
             case "1":
