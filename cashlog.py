@@ -4,9 +4,9 @@ import pandas as pd
 from tabulate import tabulate
 
 EXIT_CODES = ('X', 'x', 'exit', 'back')
-ACTION_DIVIDER = "\n-----------------------------------\n\n"
 SPACER = "\n\n\n\n\n\n"
 HORIZONTAL_RULE_SHORT = "\n----------\n"
+HORIZONTAL_RULE_LONG = "\n-----------------------------------\n"
 
 # Enumerations
 TASKS = { 
@@ -16,7 +16,6 @@ TASKS = {
     "X": "Exit" 
 }
 TRANSACTION_TYPE = { 1: "Debit", 2: "Credit" }
-
 
 def print_wallet(wallet):
     '''
@@ -30,6 +29,7 @@ def prompt_enter_txn():
     date, prev_date = None, None
     payee, prev_payee = None, None
     payer, prev_payer = None, None
+    amount, prev_amount = None, None
     envelope_from, prev_envelope_from = None, None
     envelope_to, prev_envelope_to = None, None
     notes, prev_notes = None, None
@@ -51,13 +51,15 @@ Press return without entering a value into a field to use the value for that fie
                 prompt += "\n"
             user_input = input(prompt + "Enter Transaction Type: ")
             if user_input in EXIT_CODES:
-                break
+                print(SPACER)
+                return
             if user_input == "" and prev_type == None:
                 print(SPACER + "A value must be entered for field 'Type'.")
                 continue
             elif user_input == "" and prev_type != None:
-                user_input = prev_type
-            type = user_input
+                type = prev_type
+            else:
+                type = TRANSACTION_TYPE[int(user_input)]
         if date == None:
             # DATE
             prompt = "\nDate" + HORIZONTAL_RULE_SHORT
@@ -65,13 +67,47 @@ Press return without entering a value into a field to use the value for that fie
                 prompt += "Default = " + str(prev_date) + "\n\n"
             user_input = input(prompt + "Enter Transaction Date: ")
             if user_input in EXIT_CODES:
-                break
+                print(SPACER)
+                return
             if user_input == "" and prev_date == None:
                 print(SPACER + "A value must be entered for field 'Date'.")
                 continue
             elif user_input == "" and prev_date != None:
                 user_input = prev_date
             date = user_input
+        match type:
+            case "Debit":
+                if payee == None:
+                    # Payee
+                    prompt = "\nPayee" + HORIZONTAL_RULE_SHORT
+                    if prev_payee != None:
+                        prompt += "Default = " + str(prev_payee) + "\n\n"
+                    user_input = input(prompt + "Enter Payee: ")
+                    if user_input in EXIT_CODES:
+                        print(SPACER)
+                        return
+                    if user_input == "" and prev_payee == None:
+                        print(SPACER + "A value must be entered for field 'Payee'.")
+                        continue
+                    elif user_input == "" and prev_payee != None:
+                        user_input = prev_payee
+                    payee = user_input
+            case "Credit":
+                if payer == None:
+                    # Payer
+                    prompt = "\nPayer" + HORIZONTAL_RULE_SHORT
+                    if prev_payer != None:
+                        prompt += "Default = " + str(prev_payer) + "\n\n"
+                    user_input = input(prompt + "Enter Payer: ")
+                    if user_input in EXIT_CODES:
+                        print(SPACER)
+                        return
+                    if user_input == "" and prev_payer == None:
+                        print(SPACER + "A value must be entered for field 'Payer'.")
+                        continue
+                    elif user_input == "" and prev_payer != None:
+                        user_input = prev_payer
+                    payer = user_input
 
         # Reset for new transaction
         prev_type = type
@@ -92,11 +128,12 @@ Press return without entering a value into a field to use the value for that fie
 def main():
     wallet = pd.read_csv("wallet.csv")
     print_wallet(wallet)
+    print(SPACER)
 
     action = ""
-    while action not in EXIT_CODES:
+    while True:
         # TODO: Use an actual map/dictionary object to define which numbers correspond to which actions, and automate the generation of this string based on the dictionary
-        prompt = ACTION_DIVIDER + "Available Tasks:\n"
+        prompt = "Available Tasks:" + HORIZONTAL_RULE_LONG
         for key in TASKS:
                 prompt += str(key) + " = " + TASKS[key] + "\n"
         print(prompt)
@@ -107,7 +144,8 @@ def main():
                 prompt_enter_txn()
             case _:
                 if action in EXIT_CODES:
-                    continue
-                print(SPACER + "Please enter a number corresponding to the below listed available tasks. To exit, enter 'X'")
+                    print(SPACER)
+                    return
+                print(SPACER + "Please enter a number corresponding to the below listed available tasks. To exit, enter 'X'\n")
 
 main()
