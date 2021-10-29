@@ -108,12 +108,45 @@ Press return without entering a value into a field to use the value for that fie
                     elif user_input == "" and prev_payer != None:
                         user_input = prev_payer
                     payer = user_input
+        if amount == None:
+            # AMOUNT
+            prompt = "\nAmount" + HORIZONTAL_RULE_SHORT
+            if prev_amount != None:
+                prompt += "Default = " + str(prev_amount) + "\n\n"
+            user_input = input(prompt + "Enter Transaction Amount: ")
+            if user_input in EXIT_CODES:
+                print(SPACER)
+                return
+            if user_input == "" and prev_amount == None:
+                print(SPACER + "A value must be entered for field 'Amount'.")
+                continue
+            elif user_input == "" and prev_amount != None:
+                user_input = prev_amount
+            amount = float(user_input)
+        # TODO: Add the prompts for the rest of the fields
+
+        # Confirmation
+        print(SPACER)
+        print("Transaction Details:")
+        print(HORIZONTAL_RULE_LONG)
+        print("Type: " + type)
+        print("Date: " + date)
+        match type:
+            case "Debit":
+                print("Payee: " + payee)
+            case "Credit":
+                print("Payer: " + payer)
+        print("Amount: " + str(amount))
+        print(HORIZONTAL_RULE_LONG)
+        confirmation = input("Press Enter to confirm. Enter 'X' and press Enter to cancel: ")
+                    
 
         # Reset for new transaction
         prev_type = type
         prev_date = date
         prev_payee = payee
         prev_payer = payer
+        prev_amount = amount
         prev_envelope_from = envelope_from
         prev_envelope_to = envelope_to
         prev_notes = notes
@@ -121,6 +154,7 @@ Press return without entering a value into a field to use the value for that fie
         date = None
         payee = None
         payer = None
+        amount = None
         envelope_from = None
         envelope_to = None
         notes = None
