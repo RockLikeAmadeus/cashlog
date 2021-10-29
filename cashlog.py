@@ -92,6 +92,7 @@ Press return without entering a value into a field to use the value for that fie
                     elif user_input == "" and prev_payee != None:
                         user_input = prev_payee
                     payee = user_input
+                    payer = ""
             case "Credit":
                 if payer == None:
                     # Payer
@@ -108,6 +109,7 @@ Press return without entering a value into a field to use the value for that fie
                     elif user_input == "" and prev_payer != None:
                         user_input = prev_payer
                     payer = user_input
+                    payee = ""
         if amount == None:
             # AMOUNT
             prompt = "\nAmount" + HORIZONTAL_RULE_SHORT
@@ -123,7 +125,35 @@ Press return without entering a value into a field to use the value for that fie
             elif user_input == "" and prev_amount != None:
                 user_input = prev_amount
             amount = float(user_input)
-        # TODO: Add the prompts for the rest of the fields
+        match type:
+            case "Debit":
+                if envelope_from == None:
+                    # From Envelope
+                    prompt = "\nEnvelope" + HORIZONTAL_RULE_SHORT
+                    if prev_envelope_from != None:
+                        prompt += "Default = " + str(prev_envelope_from) + "\n\n"
+                    user_input = input(prompt + "Deduct From Envelope: ")
+                    if user_input in EXIT_CODES:
+                        print(SPACER)
+                        return
+                    if user_input == "" and prev_envelope_from == None:
+                        print(SPACER + "You must specify an envelope from which to draw.")
+                        continue
+                    elif user_input == "" and prev_envelope_from != None:
+                        user_input = prev_envelope_from
+                    # TODO: if envelope_from not in envelopes
+                    envelope_from = user_input
+                    envelope_to = ""
+            case "Credit":
+                envelope_from = ""
+                envelope_to = "Unallocated"
+        # Notes
+        prompt = "\nNotes" + HORIZONTAL_RULE_SHORT
+        user_input = input(prompt + "Enter Transaction Notes: ")
+        if user_input in EXIT_CODES:
+            print(SPACER)
+            return
+        notes = user_input
 
         # Confirmation
         print(SPACER)
@@ -137,6 +167,10 @@ Press return without entering a value into a field to use the value for that fie
             case "Credit":
                 print("Payer: " + payer)
         print("Amount: " + str(amount))
+        if type == "Debit":
+            print("Deduct From: " + envelope_from)
+        if notes != "":
+            print("Notes: " + notes)
         print(HORIZONTAL_RULE_LONG)
         confirmation = input("Press Enter to confirm. Enter 'X' and press Enter to cancel: ")
                     
