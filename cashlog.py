@@ -6,6 +6,7 @@ from tabulate import tabulate
 EXIT_CODES = ('X', 'x', 'exit', 'back')
 ACTION_DIVIDER = "\n-----------------------------------\n\n"
 SPACER = "\n\n\n\n\n\n"
+HORIZONTAL_RULE_SHORT = "\n----------\n"
 
 
 def print_wallet(wallet):
@@ -33,10 +34,12 @@ Press return without entering a value into a field to use the value for that fie
             """)
             # TYPE
             # TODO: Use a dictionary/map for the number-type relationship here
-            prompt = "Type\n----------\n1 = Debit\n2 = Credit"
+            prompt = "Type" + HORIZONTAL_RULE_SHORT + "1 = Debit\n2 = Credit\n"
             if prev_type != None:
-                prompt += "\nDefault = " + str(prev_type)
-            user_input = input(prompt + "\nEnter Transaction Type: ")
+                prompt += "Default = " + str(prev_type) + "\n\n"
+            else:
+                prompt += "\n"
+            user_input = input(prompt + "Enter Transaction Type: ")
             if user_input in EXIT_CODES:
                 break
             if user_input == "" and prev_type == None:
@@ -47,10 +50,10 @@ Press return without entering a value into a field to use the value for that fie
             type = user_input
         if (date == None):
             # DATE
-            prompt = "\nDate\n----------"
+            prompt = "\nDate" + HORIZONTAL_RULE_SHORT
             if prev_date != None:
-                prompt += "\nDefault = " + str(prev_date)
-            user_input = input(prompt + "\nEnter Transaction Date: ")
+                prompt += "Default = " + str(prev_date) + "\n\n"
+            user_input = input(prompt + "Enter Transaction Date: ")
             if user_input in EXIT_CODES:
                 break
             if user_input == "" and prev_date == None:
