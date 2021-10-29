@@ -16,16 +16,16 @@ def print_wallet(wallet):
     print('\n' + tabulate(wallet[['envelope', 'balance']].values.tolist(), headers=['Envelope', 'Balance']))
 
 def prompt_enter_txn():
-    type, date, payee, payer = None, None, None, None
-    envelope_from, envelope_to, notes = None, None, None
+    type, prev_type = None, None
+    date, prev_date = None, None
+    payee, prev_payee = None, None
+    payer, prev_payer = None, None
+    envelope_from, prev_envelope_from = None, None
+    envelope_to, prev_envelope_to = None, None
+    notes, prev_notes = None, None
     prompt = ""
-    # Transaction entry progress markers, so mistakes don't send us to the beginning of the loop
-    type_entered, date_entered = False, False
-    payee_entered, payer_entered = False, False
-    envelope_from_entered, envelope_to_entered = False, False
-    notes_entered = False
     while True:
-        if (not type_entered):
+        if (type == None):
             print("""
 Enter Transaction Details:
 Enter 'X' for any field when finished entering transactions.
@@ -33,40 +33,48 @@ Press return without entering a value into a field to use the value for that fie
             """)
             # TYPE
             # TODO: Use a dictionary/map for the number-type relationship here
-            prompt = "Type\n----------\n1 = Debit\n2 = Credit\n"
-            if type != None:
-                prompt += "Default = " + str(type)
-            user_input = input(prompt + "Enter Transaction Type: ")
+            prompt = "Type\n----------\n1 = Debit\n2 = Credit"
+            if prev_type != None:
+                prompt += "\nDefault = " + str(prev_type)
+            user_input = input(prompt + "\nEnter Transaction Type: ")
             if user_input in EXIT_CODES:
                 break
-            if user_input == "" and type == None:
+            if user_input == "" and prev_type == None:
                 print(SPACER + "A value must be entered for field 'Type'.")
                 continue
-            elif user_input == "" and type != None:
-                user_input = type
+            elif user_input == "" and prev_type != None:
+                user_input = prev_type
             type = user_input
-            type_entered = True
-        if (not date_entered):
+        if (date == None):
             # DATE
-            prompt = "\nDate\n----------\n"
-            if date != None:
-                prompt += "Default = " + str(date)
-            user_input = input(prompt + "Enter Transaction Date: ")
+            prompt = "\nDate\n----------"
+            if prev_date != None:
+                prompt += "\nDefault = " + str(prev_date)
+            user_input = input(prompt + "\nEnter Transaction Date: ")
             if user_input in EXIT_CODES:
                 break
-            if user_input == "" and date == None:
+            if user_input == "" and prev_date == None:
                 print(SPACER + "A value must be entered for field 'Date'.")
                 continue
-            elif user_input == "" and date != None:
-                user_input = date
+            elif user_input == "" and prev_date != None:
+                user_input = prev_date
             date = user_input
-            date_entered = True
 
         # Reset for new transaction
-        type_entered, date_entered = False, False
-        payee_entered, payer_entered = False, False
-        envelope_from_entered, envelope_to_entered = False, False
-        notes_entered = False
+        prev_type = type
+        prev_date = date
+        prev_payee = payee
+        prev_payer = payer
+        prev_envelope_from = envelope_from
+        prev_envelope_to = envelope_to
+        prev_notes = notes
+        type = None
+        date = None
+        payee = None
+        payer = None
+        envelope_from = None
+        envelope_to = None
+        notes = None
 
 def main():
     wallet = pd.read_csv("wallet.csv")
