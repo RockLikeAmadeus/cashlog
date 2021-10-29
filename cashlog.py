@@ -173,9 +173,12 @@ Press return without entering a value into a field to use the value for that fie
             print("Notes: " + notes)
         print(HORIZONTAL_RULE_LONG)
         confirmation = input("Press Enter to confirm. Enter 'X' and press Enter to cancel: ")
-                    
 
-        # Reset for new transaction
+        if confirmation == "":
+            # Call enter transaction function from different file here. This file will not reference pandas or the CSV directly.
+            pass
+        # If anything but the empty string is entered, do not confirm transaction entry.
+        # Reset for new transaction, whether current transaction was entered or cancelled
         prev_type = type
         prev_date = date
         prev_payee = payee
