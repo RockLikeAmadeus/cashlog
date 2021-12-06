@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
+from register_transaction import register_transaction
 
 EXIT_CODES = ('X', 'x', 'exit', 'back')
 SPACER = "\n\n\n\n\n\n"
@@ -177,7 +178,12 @@ Press return without entering a value into a field to use the value for that fie
 
         if confirmation == "":
             # Call enter transaction function from different file here. This file will not reference pandas or the CSV directly.
-            pass
+            match type:
+                case "Debit":
+                    register_transaction(date, type, payee, amount, None, None, notes)
+                case "Credit":
+                    register_transaction(date, type, payer, amount, None, None, notes)
+
         # If anything but the empty string is entered, do not confirm transaction entry.
         # Reset for new transaction, whether current transaction was entered or cancelled
         prev_type = type
