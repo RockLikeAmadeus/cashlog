@@ -13,6 +13,7 @@ TASKS = {
     1: "Enter a transaction",
     2: "Allocate funds based on a pre-configured distribution",
     3: "Transfer funds between envelope",
+    4: "View your wallet",
     "X": "Exit" 
 }
 TRANSACTION_TYPE = { 1: "Debit", 2: "Credit" }
@@ -213,6 +214,10 @@ def main():
             case "1":
                 print(SPACER)
                 prompt_enter_txn()
+            case "4":
+                print(SPACER)
+                print_wallet(wallet)
+                print(HORIZONTAL_RULE_SHORT)
             case _:
                 if action in EXIT_CODES:
                     print(SPACER)
